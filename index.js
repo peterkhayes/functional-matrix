@@ -428,11 +428,7 @@ Matrix.prototype.count = function(elem) {
 };
 
 Matrix.prototype.replace = function(target, replacement) {
-  var that = this;
-  return new Matrix(this._rows, this._cols, function(i, j) {
-    var elem = that.get(i, j);
-    return (elem === target) ? replacement : elem;
-  });
+  return this.map(function(elem) { return (elem === target) ? replacement : elem;});
 };
 
 /*
@@ -449,15 +445,11 @@ Matrix.prototype.add = Matrix.prototype.plus = function(that) {
       throw new Error(["Cannot add a matrix with", this._cols, "cols to a matrix with", that._cols, "rows"].join(" "));
     }
 
-    return new Matrix(this._rows, this._cols, (function(i, j) {
-      return this.get(i, j) + that.get(i, j);
-    }).bind(this));
+    return this.map(function(elem, i, j) { return elem + that.get(i, j); });
 
   // Adding a constant value to a matrix.
   } else if (isNumber(that) || isString(that)) {
-    return new Matrix(this._rows, this._cols, (function(i, j) {
-      return this.get(i, j) + that;
-    }).bind(this));
+    return this.map(function(elem) { return elem + that; });
 
   } else {
     throw new Error("Cannot add a matrix to " + that);
@@ -481,9 +473,7 @@ Matrix.prototype.times = Matrix.prototype.multiply = function(that) {
 
   // Scalar multiplication.
   } else if (isNumber(that)) {
-    return new Matrix(this._rows, this._cols, (function(i, j) {
-      return this.get(i, j) * that;
-    }).bind(this));
+    return this.map(function(elem) { return elem * that; });
 
   } else {
     throw new Error("Cannot multiply a matrix with " + that);
@@ -499,20 +489,22 @@ Matrix.prototype.subtract = Matrix.prototype.minus = function(that) {
     if (this._cols !== that._cols) {
       throw new Error(["Cannot subtract a matrix with", that._cols, "cols from a matrix with", this._cols, "rows"].join(" "));
     }
-
-    return new Matrix(this._rows, this._cols, (function(i, j) {
-      return this.get(i, j) - that.get(i, j);
-    }).bind(this));
+    return this.map(function(elem, i, j) { return elem - that.get(i, j); });
 
   // Subtracting a constant value from a matrix.
   } else if (isNumber(that)) {
-    return new Matrix(this._rows, this._cols, (function(i, j) {
-      return this.get(i, j) - that;
-    }).bind(this));
+    return this.map(function(elem) { return elem - that; });
 
   } else {
     throw new Error(["Cannot subtract", String(that), "from a matrix"].join(" "));
   }
+};
+
+Matrix.prototype.mod = function(modulus) {
+  if (!isNumber(modulus)) {
+    throw new Error("Cannot take a matrix modulo a non-number");
+  }
+  return this.map(function(elem) { return elem % modulus; });
 };
 
 Matrix.identity = function(size) {

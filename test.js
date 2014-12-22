@@ -700,6 +700,13 @@ describe("Matrix", function() {
     });
   });
 
+  describe("#mod", function() {
+    it("returns a matrix modulo a number", function() {
+      expect(ex23.mod(2).to2dArray()).to.deep.equal([[1, 0, 1], [0, 1, 0]]);
+      expect(ex3.mod(4).to2dArray()).to.deep.equal([[1, 2, 3], [0, 1, 2], [3, 0, 1]]);
+    });
+  });
+
   describe("#identity", function() {
     it("returns the identity matrix for a given size", function() {
       expect(Matrix.identity(1).to2dArray()).to.deep.equal([[1]]);
