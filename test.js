@@ -326,6 +326,14 @@ describe("Matrix", function() {
       }, 1);
       expect(reduced).to.deep.equal(expected);
     });
+
+    it("can take an array of starting values", function() {
+      var expected = [7, 13];
+      var reduced = ex23.reduceRows(function(prev, item) {
+        return item + prev;
+      }, [1, -2]);
+      expect(reduced).to.deep.equal(expected);
+    });
   });
 
   describe("#reduceCols", function() {
@@ -334,6 +342,14 @@ describe("Matrix", function() {
       var reduced = ex23.reduceCols(function(prev, item) {
         return item + prev;
       }, 1);
+      expect(reduced).to.deep.equal(expected);
+    });
+
+    it("can take an array of starting values", function() {
+      var expected = [6, 9, 12];
+      var reduced = ex23.reduceCols(function(prev, item) {
+        return item + prev;
+      }, [1, 2, 3]);
       expect(reduced).to.deep.equal(expected);
     });
   });

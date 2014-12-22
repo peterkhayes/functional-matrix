@@ -1,14 +1,14 @@
 {
-  "name": "Matrix",
+  "name": "functional-matrix",
   "version": "0.0.0",
-  "description": "A matrix implementation in javascript",
+  "description": "A functional-programming matrix library",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha test.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/peterkhayes/matrix"
+    "url": "https://github.com/peterkhayes/functional-matrix"
   },
   "keywords": [
     "matrix",
@@ -19,9 +19,9 @@
   "author": "Peter Hayes <peter.k.hayes@gmail.com> (http://peterkhayes.com/)",
   "license": "BSD-2-Clause",
   "bugs": {
-    "url": "https://github.com/peterkhayes/matrix/issues"
+    "url": "https://github.com/peterkhayes/functional-matrix/issues"
   },
-  "homepage": "https://github.com/peterkhayes/matrix",
+  "homepage": "https://github.com/peterkhayes/functional-matrix",
   "dependencies": {
     "mocha": "~2.0.1",
     "chai": "~1.10.0"

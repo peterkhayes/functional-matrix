@@ -228,7 +228,8 @@ Matrix.prototype.reduceVertical = function(iterator, val) {
 Matrix.prototype.reduceRows = function(iterator, val) {
   var output = [];
   for (var i = 0; i < this._rows; i++) {
-    output.push(this.getRow(i).reduce(iterator, val));
+    var initial = isArray(val) ? val[i] : val;
+    output.push(this.getRow(i).reduce(iterator, initial));
   }
   return output;
 };
@@ -236,7 +237,8 @@ Matrix.prototype.reduceRows = function(iterator, val) {
 Matrix.prototype.reduceCols = function(iterator, val) {
   var output = [];
   for (var i = 0; i < this._cols; i++) {
-    output.push(this.getCol(i).reduce(iterator, val));
+    var initial = isArray(val) ? val[i] : val;
+    output.push(this.getCol(i).reduce(iterator, initial));
   }
   return output;
 };
@@ -549,11 +551,11 @@ Matrix.prototype.rowMultiply = function(fromIdx, toIdx, multiple) {
 };
 
 Matrix.prototype.inverse = function() {
-  // throw new Error("Not yet implemented");
-  var size = this._rows;
-  if (size !== this._cols) {
-    throw new Error("A matrix must be square to have an inverse.");
-  }
+  throw new Error("Not yet implemented");
+  // var size = this._rows;
+  // if (size !== this._cols) {
+  //   throw new Error("A matrix must be square to have an inverse.");
+  // }
 };
 
 Matrix.prototype.upperTriangular = function() {
