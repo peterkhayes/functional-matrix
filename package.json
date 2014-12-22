@@ -1,6 +1,6 @@
 {
   "name": "functional-matrix",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A functional-programming matrix library",
   "main": "index.js",
   "scripts": {
@@ -29,6 +29,8 @@
   },
   "homepage": "https://github.com/peterkhayes/functional-matrix",
   "dependencies": {
+  },
+  "devDependencies": {
     "mocha": "~2.0.1",
     "chai": "~1.10.0"
   }
