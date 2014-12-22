@@ -4,10 +4,10 @@
 
 ### Initializiation
 ```javascript
-  var Matrix = require("thematrix")
+  var Matrix = require("functional-matrix");
 
   // a 2x3 matrix where all elements are "hello".
-  var matrix1 = new Matrix(2, 3, "hello")
+  var matrix1 = new Matrix(2, 3, "hello");
 
   // a 3x1 matrix with random elements.
   var matrix2 = new Matrix(3, 1, function(i, j) {
