@@ -17,10 +17,10 @@
   // a matrix from a 2d array.
   var matrix4 = new Matrix([[1, 2], [3, 4]]);
 
-  // the 4x4 identify matrix.
+  // the 4x4 identity matrix.
   var matrix3 = Matrix.identity(4)
 
-  // A new 2d array from the matrix.
+  // A new 2d array from a matrix.
   var arrays = matrix4.to2dArray();
 ```
 
