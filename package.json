@@ -14,7 +14,13 @@
     "matrix",
     "matrices",
     "2d",
-    "array"
+    "array",
+    "functional",
+    "programming",
+    "each",
+    "forEach",
+    "map",
+    "reduce"
   ],
   "author": "Peter Hayes <peter.k.hayes@gmail.com> (http://peterkhayes.com/)",
   "license": "BSD-2-Clause",
