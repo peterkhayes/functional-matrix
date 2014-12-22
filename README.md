@@ -1,4 +1,4 @@
-# FunctionalMatrix
+# Functional Matrix
 
 ## Usage
 
@@ -9,16 +9,16 @@
   // a 2x3 matrix where all elements are "hello".
   var matrix1 = new Matrix(2, 3, "hello");
 
-  // a 3x1 matrix with random elements.
-  var matrix2 = new Matrix(3, 1, function(i, j) {
-    return Math.random();
+  // a 3x1 matrix with computed elements.
+  var matrix2 = new Matrix(3, 1, function(row, col) {
+    return 10*row + 3*col;
   })
 
   // a matrix from a 2d array.
-  var matrix4 = new Matrix([[1, 2], [3, 4]]);
+  var matrix3 = new Matrix([[1, 2], [3, 4]]);
 
   // the 4x4 identity matrix.
-  var matrix3 = Matrix.identity(4)
+  var matrix4 = Matrix.identity(4)
 
   // A new 2d array from a matrix.
   var arrays = matrix4.to2dArray();
