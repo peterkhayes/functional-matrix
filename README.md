@@ -59,6 +59,8 @@
   
   matrix.add(4).add(otherMatrix).times(anotherMatrix).mod(2).determinant()
 
+  matrix.slice(0, 0, 2, 2) // like array slice, but with startRow, startCol, endRow, endCol
+
   matrix.transpose() // like most methods, returns a copy.
   matrix.pushRow([1, 2, 3]).pushCol([4, 5, 6]).shiftRow() // except these, for parity with standard array methods.
 ```
@@ -70,6 +72,9 @@
 - new Matrix(height, width, fillFunction(row, col))
 - new Matrix(arrayOfArrays)
 - Identity(size)
+- Rotation(radians) - *2d rotation matrix for given angle*
+- RotationRadians(radians) - *alias of Rotation*
+- RotationDegrees(degrees)
 
 ### Basics
 - .to2dArray()
@@ -80,7 +85,7 @@
 - .fill(fillFunction(rowIdx, colIdx))
 - .clear() - *sets all values to undefined*
 - .size() - *returns an object {rows: x, cols: y};*
-- .withinBounds(rowIdx, colIdx)
+- .withinBounds(rowIdx, colIdx) - *boolean*
 - .rows() - *row count*
 - .cols() - *col count*
 - .get(rowIdx, colIdx)
@@ -100,7 +105,7 @@ All functional methods by default iterate from left to right, top to bottom.  Ve
 - .reduceHorizontal - *alias of `reduce`*
 - .reduceVertical
 - .reduceRows(iterator(acc, val, row), initial) - *collapses each row to turn matrix into 1d array*
-- .reduceCols(iterator(acc, val, col), initial)
+- .reduceCols(iterator(acc, val, col), initial) - *initial can be a value or an array of values, one per column*
 
 __coming soon__
 - Support for currying and partial application!
@@ -117,6 +122,7 @@ __coming soon__
 - .times(matrix)
 - .multiply - *alias of `times`*
 - .mod(number)
+- .round(digit) - *rounds all values to the given precision*
 - .determinant()
 - .rowMultiply(fromIdx, toIdx, multiple)
 
@@ -128,8 +134,10 @@ __coming soon__
 
 
 ### Size-changing methods
-These work the same as the familiar array methods, except they take/return arrays. Push/pop/shift/unshift are in-place.  Concat/transpose/minor return new matrices.
+These work the same as the familiar array methods, except they take/return arrays. Push/pop/shift/unshift are in-place.  Slice/concat/transpose/minor return new matrices.
 
+- .slice(startRow, startCol, endRow, endCol) - *behaves like array slice*
+- .submatrix - *alias of slice*
 - .pushRow(newRow)
 - .pushCol(newCol)
 - .unshiftRow(newRow)

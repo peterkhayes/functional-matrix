@@ -247,6 +247,15 @@ Matrix.prototype.reduceCols = function(iterator, val) {
   Size-changing methods
 */
 
+Matrix.prototype.submatrix = function(startRow, startCol, stopRow, stopCol) {
+  var newStorage = this._storage.slice(startRow, stopRow).map(function(row) {
+    return row.slice(startCol, stopCol);
+  });
+  return new Matrix(newStorage);
+};
+
+Matrix.prototype.slice = Matrix.prototype.submatrix;
+
 Matrix.prototype.pushRow = function(newRow) {
   if (!isArray(newRow)) {
     throw new Error("Cannot push a non-array onto a matrix");
@@ -509,6 +518,13 @@ Matrix.prototype.mod = function(modulus) {
   return this.map(function(elem) { return elem % modulus; });
 };
 
+Matrix.prototype.round = function(precision) {
+  var pow10 = Math.pow(10, precision || 0);
+  return this.map(function(elem) {
+    return Math.round(elem*pow10)/pow10;
+  });
+};
+
 Matrix.identity = function(size) {
   if (size > 0 && size < Infinity) {
     return new Matrix(size, size, function(i, j) {
@@ -517,6 +533,19 @@ Matrix.identity = function(size) {
   } else {
     throw new Error("Invalid size for identity matrix");
   }
+};
+
+Matrix.rotation = function(rad) {
+  return new Matrix([
+    [Math.cos(rad), -1*Math.sin(rad)],
+    [Math.sin(rad), Math.cos(rad)]
+  ]);
+};
+
+Matrix.rotationRadians = Matrix.rotation;
+
+Matrix.rotationDegrees = function(deg) {
+  return Matrix.rotation(deg*Math.PI/180);
 };
 
 Matrix.prototype.determinant = function() {

@@ -358,6 +358,23 @@ describe("Matrix", function() {
     Size-Changing Methods
   */
 
+  describe("#submatrix", function() {
+
+    it("returns parts of a matrix", function() {
+      var sub1 = ex23.submatrix(0, 0, 1, 2);
+      var sub2 = ex3.submatrix(-2, -3, -1, -1);
+      var sub3 = ex3.submatrix(1, 1);
+      expect(sub1.to2dArray()).to.deep.equal([[1, 2]]);
+      expect(sub2.to2dArray()).to.deep.equal([[4, 5]]);
+      expect(sub3.to2dArray()).to.deep.equal([[5, 6], [8, 9]]);
+    });
+
+    it("is aliased to #slice", function() {
+      expect(ex2.slice).to.equal(ex2.submatrix);
+    });
+
+  });
+
   describe("#pushRow", function() {
     it("adds a new row to the bottom of the matrix", function() {
       var newRow = [5, 6];
@@ -753,5 +770,36 @@ describe("Matrix", function() {
       expect(ex23.determinant.bind(ex23)).to.throw("A matrix must be square to have a determinant");
     });
   });
+
+  describe("#round", function() {
+    it("rounds a matrix to arbitrary precision", function() {
+      var m = new Matrix([[Math.PI, Math.sqrt(2)], [Math.sqrt(1000), 0]]);
+      expect(m.round().to2dArray()).to.deep.equal([[3, 1], [32, 0]]);
+      expect(m.round(2).to2dArray()).to.deep.equal([[3.14, 1.41], [31.62, 0]]);
+      expect(m.round(-1).to2dArray()).to.deep.equal([[0, 0], [30, 0]]);
+    });
+  });
+
+  describe("#rotation", function() {
+
+    it("creates a rotation matrix for the given angle", function() {
+      var rot180 = Matrix.rotation(Math.PI/2);
+      var rot60 = Matrix.rotation(-1*Math.PI/3);
+
+      expect(rot180.round(2).to2dArray()).to.deep.equal([[0, -1], [1, 0]]);
+      expect(rot60.round(2).to2dArray()).to.deep.equal([[0.5, 0.87], [-0.87, 0.5]]);
+    });
+
+    it("is aliased to rotationRadians", function() {
+      expect(Matrix.rotationRadians).to.equal(Matrix.rotation);
+    });
+  });
+
+  describe("#rotationDegrees", function() {
+    it("creates a rotation matrix", function() {
+      expect(Matrix.rotationDegrees(90).equals(Matrix.rotation(Math.PI/2))).to.equal(true);
+      expect(Matrix.rotationDegrees(-60).equals(Matrix.rotation(-1*Math.PI/3))).to.equal(true);
+    });
+  }); 
 
 });
