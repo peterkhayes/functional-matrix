@@ -225,6 +225,107 @@ describe("Matrix", function() {
     });
   });
 
+  describe("#setRow", function() {
+    it("sets a row to a single value and returns the old value", function() {
+      var output = ex23.setRow(1, 5);
+      expect(output).to.deep.equal([4, 5, 6]);
+      expect(ex23.to2dArray()).to.deep.equal([[1, 2, 3], [5, 5, 5]]);
+    });
+
+    it("sets a row to an array of values and returns the old value", function() {
+      var output = ex23.setRow(0, [5, 6, "seven"]);
+      expect(output).to.deep.equal([1, 2, 3]);
+      expect(ex23.to2dArray()).to.deep.equal([[5, 6, "seven"], [4, 5, 6]]);
+    });
+
+    it("sets a row to computed values and returns the old value", function() {
+      var output = ex23.setRow(1, function(col) { return col + 2});
+      expect(output).to.deep.equal([4, 5, 6]);
+      expect(ex23.to2dArray()).to.deep.equal([[1, 2, 3], [2, 3, 4]]);
+    });
+  });
+
+  describe("#setCol", function() {
+    it("sets a col to a single value and returns the old value", function() {
+      var output = ex23.setCol(0, 7);
+      expect(output).to.deep.equal([1, 4]);
+      expect(ex23.to2dArray()).to.deep.equal([[7, 2, 3], [7, 5, 6]]);
+    });
+
+    it("sets a col to an array of values and returns the old value", function() {
+      var output = ex23.setCol(1, [99, "dos"]);
+      expect(output).to.deep.equal([2, 5]);
+      expect(ex23.to2dArray()).to.deep.equal([[1, 99, 3], [4, "dos", 6]]);
+    });
+
+    it("sets a col to computed values and returns the old value", function() {
+      var output = ex23.setCol(2, function(row) { return row + 6});
+      expect(output).to.deep.equal([3, 6]);
+      expect(ex23.to2dArray()).to.deep.equal([[1, 2, 6], [4, 5, 7]]);
+    });
+  });
+
+  describe("#equalsRow", function() {
+    it("tests if a row is equal to a row of another matrix", function() {
+      expect(ex23.equalsRow(0, ex3)).to.equal(true);
+      expect(ex23.equalsRow(1, ex3)).to.equal(true);
+      expect(ex23.equalsRow(1, repeats)).to.equal(false);
+      expect(ex23.equalsRow(1, ex2)).to.equal(false);
+    });
+
+    it("tests if a row is equal to an array", function() {
+      expect(ex23.equalsRow(1, [4, 5, 6])).to.equal(true);
+      expect(ex23.equalsRow(0, [1, 2])).to.equal(false);
+      expect(ex23.equalsRow(0, [1, 2, 3, 4])).to.equal(false);
+      expect(ex23.equalsRow(0, [1, 3, 3])).to.equal(false);
+    });
+
+    it("throws if target is not an array or a matrix", function() {
+      expect(ex23.equalsRow.bind(ex23, 1, 4)).to.throw();
+      expect(ex23.equalsRow.bind(ex23, 1, "hello")).to.throw();
+    });
+
+    it("throws if row is out of bounds on caller or target matrix", function() {
+      expect(ex23.equalsRow.bind(ex23, -1, ex3)).to.throw();
+      expect(ex23.equalsRow.bind(ex23, 2, ex3)).to.throw();
+      expect(ex23.equalsRow.bind(ex3, 2, ex23)).to.throw();
+    });
+  });
+
+  describe("#equalsCol", function() {
+
+    var other;
+
+    beforeEach(function() {
+      other = ex23.concat(new Matrix([[0], [0]]));
+    });
+
+    it("tests if a col is equal to a col of another matrix", function() {
+      expect(ex23.equalsCol(0, other)).to.equal(true);
+      expect(ex23.equalsCol(1, other)).to.equal(true);
+      expect(ex23.equalsCol(1, repeats)).to.equal(false);
+      expect(ex23.equalsCol(0, ex3)).to.equal(false);
+    });
+
+    it("tests if a col is equal to an array", function() {
+      expect(ex23.equalsCol(1, [2, 5])).to.equal(true);
+      expect(ex23.equalsCol(0, [1])).to.equal(false);
+      expect(ex23.equalsCol(0, [1, 4, 7])).to.equal(false);
+      expect(ex23.equalsCol(0, [1, 5])).to.equal(false);
+    });
+
+    it("throws if target is not an array or a matrix", function() {
+      expect(ex23.equalsCol.bind(ex23, 1, 4)).to.throw();
+      expect(ex23.equalsCol.bind(ex23, 1, "hello")).to.throw();
+    });
+
+    it("throws if col is out of bounds on caller or target matrix", function() {
+      expect(ex23.equalsCol.bind(ex23, -1, ex3)).to.throw();
+      expect(ex23.equalsCol.bind(ex23, 3, ex3)).to.throw();
+      expect(ex23.equalsCol.bind(ex3, 3, ex23)).to.throw();
+    });
+  });
+
   /* 
     Functional Programming Methods
   */
@@ -762,8 +863,8 @@ describe("Matrix", function() {
       expect(ex2.determinant()).to.equal(-2);
       expect(ex3.determinant()).to.equal(0);
 
-      var matrix = ex23.pushRow([-1, -4, 1]);
-      expect(matrix.determinant()).to.equal(-24);
+      ex23.pushRow([-1, -4, 1]);
+      expect(ex23.determinant()).to.equal(-24);
     });
 
     it("throws if matrix is not square", function() {

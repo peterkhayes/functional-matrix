@@ -162,6 +162,100 @@ Matrix.prototype.getCol = function(col) {
   return output;
 };
 
+Matrix.prototype.setRow = function(row, fillFunction) {
+  if (!isFunction(fillFunction)) {
+    var fillVal = fillFunction;
+    if (isArray(fillFunction)) {
+      fillFunction = function(col) {return fillVal[col]; }
+    } else {
+      fillFunction = function() {return fillVal; }
+    }
+  }
+  var output = [];
+  for (var col = 0; col < this._cols; col++) {
+    output[col] = this._storage[row][col];
+    this._storage[row][col] = fillFunction(col);
+  }
+  return output;
+};
+
+Matrix.prototype.setCol = function(col, fillFunction) {
+  if (!isFunction(fillFunction)) {
+    var fillVal = fillFunction;
+    if (isArray(fillFunction)) {
+      fillFunction = function(row) {return fillVal[row]; }
+    } else {
+      fillFunction = function() {return fillVal; }
+    }
+  }
+  var output = [];
+  for (var row = 0; row < this._rows; row++) {
+    output[row] = this._storage[row][col];
+    this._storage[row][col] = fillFunction(row);
+  }
+  return output;
+};
+
+Matrix.prototype.equalsRow = function(row, that) {
+  var thatRow;
+  if (isArray(that)) {
+    thatRow = that;
+  } else if (that instanceof Matrix) {
+    thatRow = that.getRow(row);
+    if (!thatRow) {
+      throw new Error(["Row index", row, "is out of bounds on target matrix"].join(" "));
+    }
+  } else {
+    throw new Error("Can only compare rows with arrays and other matrices");
+  }
+
+  if (row < 0 || row >= this._rows) {
+    throw new Error(["Row index", row, "is out of bounds"].join(" "));
+  }
+
+  var thisRow = this.getRow(row);
+  var len = thisRow.length;
+  if (thatRow.length !== len) {
+    return false;
+  }
+  for (var i = 0; i < len; i++) {
+    if (thisRow[i] !== thatRow[i]) {
+      return false;
+    }
+  }
+  return true;
+};
+
+Matrix.prototype.equalsCol = function(col, that) {
+  if (col < 0 || col >= this._cols) {
+    throw new Error(["Col index", col, "is out of bounds"].join(" "));
+  }
+
+  var thatCol;
+  if (isArray(that)) {
+    thatCol = that;
+  } else if (that instanceof Matrix) {
+    thatCol = that.getCol(col);
+    if (!thatCol) {
+      throw new Error(["Col index", col, "is out of bounds on target matrix"].join(" "));
+    }
+  } else {
+    throw new Error("Can only compare cols with arrays and other matrices");
+  }
+
+  var thisCol = this.getCol(col);
+  var len = thisCol.length;
+  if (thatCol.length !== len) {
+    return false;
+  }
+  for (var i = 0; i < len; i++) {
+    if (thisCol[i] !== thatCol[i]) {
+      return false;
+    }
+  }
+  return true;
+};
+
 
 
 /*
@@ -264,8 +358,7 @@ Matrix.prototype.pushRow = function(newRow) {
     throw new Error(["Cannot push a row of width", newRow.length, "onto a matrix of width", this._cols].join(" "));
   }
   this._storage.push(newRow.slice());
-  this._rows++;
-  return this;
+  return ++this._rows;
 };
 
 Matrix.prototype.pushCol = function(newCol) {
@@ -278,8 +371,7 @@ Matrix.prototype.pushCol = function(newCol) {
   for (var i = 0; i < this._rows; i++) {
     this._storage[i].push(newCol[i]);
   }
-  this._cols++;
-  return this;
+  return ++this._cols;
 };
 
 Matrix.prototype.unshiftRow = function(newRow) {
@@ -290,8 +382,7 @@ Matrix.prototype.unshiftRow = function(newRow) {
     throw new Error(["Cannot unshift a row of width", newRow.length, "onto a matrix of width", this._cols].join(" "));
   }
   this._storage.unshift(newRow.slice());
-  this._rows++;
-  return this;
+  return ++this._rows;
 };
 
 Matrix.prototype.unshiftCol = function(newCol) {
@@ -304,8 +395,7 @@ Matrix.prototype.unshiftCol = function(newCol) {
   for (var i = 0; i < this._rows; i++) {
     this._storage[i].unshift(newCol[i]);
   }
-  this._cols++;
-  return this;
+  return this._cols;
 };
 
 Matrix.prototype.popRow = function() {

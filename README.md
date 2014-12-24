@@ -1,5 +1,7 @@
 # Functional Matrix
 
+An easy-to-use library for working with two-dimensional arrays and matrices.  Most array methods are implemented here, including `each`, `map`, `reduce`, `push`, `pop`, `slice`, and `concat`.  Standard numerical methods, such as matrix multiplication and determinants, are also included, along with some commonly used matrices, such as identity and rotation.
+
 ## Usage
 
 ### Initializiation
@@ -16,9 +18,6 @@
 
   // a matrix from a 2d array.
   var matrix3 = new Matrix([[1, 2], [3, 4]]);
-
-  // the 4x4 identity matrix.
-  var matrix4 = Matrix.identity(4)
 
   // A new 2d array from a matrix.
   var arrays = matrix4.to2dArray();
@@ -51,18 +50,22 @@
 ### Regular matrix stuff
 
 ```javascript
-  var matrix = Matrix.identity(3);
+  var matrix = new Matrix(3, 4, Math.random) // 3x4 matrix of random elements
 
   matrix.set(1, 2, "bananas")
   matrix.get(1, 2); // "bananas"
   matrix.equals(otherMatrix); // boolean
   
+  // Numerical methods
   matrix.add(4).add(otherMatrix).times(anotherMatrix).mod(2).determinant()
 
-  matrix.slice(0, 0, 2, 2) // like array slice, but with startRow, startCol, endRow, endCol
-
-  matrix.transpose() // like most methods, returns a copy.
-  matrix.pushRow([1, 2, 3]).pushCol([4, 5, 6]).shiftRow() // except these, for parity with standard array methods.
+  // Implementations of standard array methods.
+  matrix.slice(0, 0, 2, 2) // args: startRow, startCol, endRow
+  matrix.pushCol([5, 6, 7]); // returns new col count
+  matrix.popRow(); 
+  matrix.concatVertical(otherMatrix);
+  matrix.indexOf(1) // {row: 0, col: 0}
+  
 ```
 
 ## Method List
@@ -73,16 +76,18 @@
 - new Matrix(arrayOfArrays)
 - Identity(size)
 - Rotation(radians) - *2d rotation matrix for given angle*
-- RotationRadians(radians) - *alias of Rotation*
+- RotationRadians(radians) - *alias of `Rotation`*
 - RotationDegrees(degrees)
 
 ### Basics
 - .to2dArray()
 - .toString()
 - .equals(matrix)
+- .equalsRow(rowIdx, array)
+- .equalsRow(rowIdx, matrix)
+- .equalsCol(colIdx, array)
+- .equalsCol(colIdx, matrix)
 - .copy()
-- .set(rowIdx, colIdx, newValue)
-- .fill(fillFunction(rowIdx, colIdx))
 - .clear() - *sets all values to undefined*
 - .size() - *returns an object {rows: x, cols: y};*
 - .withinBounds(rowIdx, colIdx) - *boolean*
@@ -91,6 +96,14 @@
 - .get(rowIdx, colIdx)
 - .getRow(rowIdx)
 - .getCol(colIdx)
+- .set(rowIdx, colIdx, newValue)
+- .setRow(rowIdx, newValue)
+- .setRow(rowIdx, arrayOfNewValues)
+- .setRow(rowIdx, function(colIdx))
+- .setCol(colIdx, newValue)
+- .setCol(colIdx, arrayOfNewValues)
+- .setCol(colIdx, function(rowIdx))
+- .fill(fillFunction(rowIdx, colIdx)) - *sets all values*
 
 ### Functional Methods
 All functional methods by default iterate from left to right, top to bottom.  Vertical versions are also provided, though.
