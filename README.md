@@ -88,37 +88,37 @@ __coming soon__
 - .toString()
 - .copy()
 - .equals(matrix)
-- .equalsRow(rowIndex, array) - *is row equal to given array*
-- .equalsRow(rowIndex, matrix) - *is row equal to row in other matrix *
-- .equalsCol(colIndex, array)
-- .equalsCol(colIndex, matrix)
+- .equalsRow(rowIdx, array) - *is row equal to given array*
+- .equalsRow(rowIdx, matrix) - *is row equal to row in other matrix*
+- .equalsCol(colIdx, array)
+- .equalsCol(colIdx, matrix)
 - .size() - *returns an object {rows: x, cols: y};*
 - .rows() - *row count*
 - .cols() - *col count*
-- .withinBounds(rowIndex, colIndex) - *boolean*
-- .get(rowIndex, colIndex)
-- .getRow(rowIndex) - *returns a copy*
-- .getCol(colIndex)
-- .set(rowIndex, colIndex, newValue)
-- .setRow(rowIndex, newValue) - *all entries are set to newValue*
-- .setRow(rowIndex, arrayOfNewValues)
-- .setRow(rowIndex, function(colIndex))
-- .setCol(colIndex, newValue)
-- .setCol(colIndex, arrayOfNewValues)
-- .setCol(colIndex, function(rowIndex))
-- .fill(fillFunction(rowIndex, colIndex)) - *sets all values*
+- .withinBounds(rowIdx, colIdx) - *boolean*
+- .get(rowIdx, colIdx)
+- .getRow(rowIdx) - *returns a copy*
+- .getCol(colIdx)
+- .set(rowIdx, colIdx, newValue)
+- .setRow(rowIdx, newValue) - *all entries are set to newValue*
+- .setRow(rowIdx, arrayOfNewValues) - *entries set to values in array*
+- .setRow(rowIdx, function(colIdx)) - *entries are calculated by given function*
+- .setCol(colIdx, newValue)
+- .setCol(colIdx, arrayOfNewValues)
+- .setCol(colIdx, function(rowIdx))
+- .fill(fillFunction(rowIdx, colIdx)) - *sets all values*
 - .clear() - *sets all values to undefined*
 
 ### Functional Methods
 All functional methods by default iterate from left to right, top to bottom.  Vertical versions are also provided, though.
 
-- .map(iterator(value, rowIndex, colIndex, matrix))
-- .each(iterator(value, rowIndex, colIndex, matrix))
+- .map(iterator(value, rowIdx, colIdx, matrix))
+- .each(iterator(value, rowIdx, colIdx, matrix))
 - .eachHorizontal - *alias of `each`*
 - .eachVertical
-- .eachRow(iterator(row, rowIndex, matrix)) - *passes each row array to the iterator*
-- .eachCol(iterator(col, colIndex, matrix))
-- .reduce(iterator(acc, value, rowIndex, colIndex, matrix))
+- .eachRow(iterator(row, rowIdx, matrix)) - *passes each row array to the iterator*
+- .eachCol(iterator(col, colIdx, matrix))
+- .reduce(iterator(acc, value, rowIdx, colIdx, matrix))
 - .reduceHorizontal - *alias of `reduce`*
 - .reduceVertical
 - .reduceRows(iterator(acc, value, row), initial) - *collapses each row to turn matrix into 1d array*
@@ -126,7 +126,7 @@ All functional methods by default iterate from left to right, top to bottom.  Ve
 
 __coming soon__
 - Support for currying and partial application!
-- Right/bottom each/reduce
+- Right/bottom versions of each/reduce
 - .every()
 - .some()
 - .zipWith()
@@ -161,9 +161,9 @@ __coming soon__
 ### Size-changing methods
 These work the same as the familiar array methods, except they take/return arrays. Push/pop/shift/unshift are in-place.  Slice/concat/transpose/minor return new matrices.
 
-- .slice(startRow, startCol, endRow, endCol) - *behaves like array slice*
+- .slice(startRow, startCol, endRow, endCol) - *negative indices behave like array slice*
 - .submatrix() - *alias of `slice`*
-- .pushRow(newRow)
+- .pushRow(newRow) - *returns new row count*
 - .pushCol(newCol)
 - .unshiftRow(newRow)
 - .unshiftCol(newCol)
@@ -174,12 +174,16 @@ These work the same as the familiar array methods, except they take/return array
 - .concat(matrix)
 - .concatHorizontal - *alias of `concat`*
 - .concatVertical(matrix)
-- .minor(row, col) - *the (row, col) minor of the matrix*
+- .minor(row, col) - *the matrix after removing the given row and column*
 - .transpose()
 
 __coming soon__
 - .swapRows()
 - .swapCols()
+- .rotateCW()
+- .rotateCCW()
+- .flipHorizontal()
+- .flipVertical()
 
 ### Query methods
 
@@ -188,6 +192,9 @@ __coming soon__
 - .indexesOf(elem) - *returns array of all matches*
 - .count(elem)
 - .replace(elem, newElem) - *returns copy*
+
+__coming soon__
+- Support for functions and regexes in .replace
 
 
 
