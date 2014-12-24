@@ -83,38 +83,38 @@ An easy-to-use library for working with two-dimensional arrays and matrices.  Mo
 - .to2dArray()
 - .toString()
 - .equals(matrix)
-- .equalsRow(rowIdx, array)
-- .equalsRow(rowIdx, matrix)
-- .equalsCol(colIdx, array)
-- .equalsCol(colIdx, matrix)
+- .equalsRow(rowIndex, array)
+- .equalsRow(rowIndex, matrix)
+- .equalsCol(colIndex, array)
+- .equalsCol(colIndex, matrix)
 - .copy()
 - .clear() - *sets all values to undefined*
 - .size() - *returns an object {rows: x, cols: y};*
-- .withinBounds(rowIdx, colIdx) - *boolean*
+- .withinBounds(rowIndex, colIndex) - *boolean*
 - .rows() - *row count*
 - .cols() - *col count*
-- .get(rowIdx, colIdx)
-- .getRow(rowIdx)
-- .getCol(colIdx)
-- .set(rowIdx, colIdx, newValue)
-- .setRow(rowIdx, newValue)
-- .setRow(rowIdx, arrayOfNewValues)
-- .setRow(rowIdx, function(colIdx))
-- .setCol(colIdx, newValue)
-- .setCol(colIdx, arrayOfNewValues)
-- .setCol(colIdx, function(rowIdx))
-- .fill(fillFunction(rowIdx, colIdx)) - *sets all values*
+- .get(rowIndex, colIndex)
+- .getRow(rowIndex)
+- .getCol(colIndex)
+- .set(rowIndex, colIndex, newValue)
+- .setRow(rowIndex, newValue)
+- .setRow(rowIndex, arrayOfNewValues)
+- .setRow(rowIndex, function(colIndex))
+- .setCol(colIndex, newValue)
+- .setCol(colIndex, arrayOfNewValues)
+- .setCol(colIndex, function(rowIndex))
+- .fill(fillFunction(rowIndex, colIndex)) - *sets all values*
 
 ### Functional Methods
 All functional methods by default iterate from left to right, top to bottom.  Vertical versions are also provided, though.
 
-- .each(iterator(val, rowIdx, colIdx, matrix))
+- .each(iterator(val, rowIndex, colIndex, matrix))
 - .eachHorizontal - *alias of `each`*
 - .eachVertical
-- .eachRow(iterator(row, rowIdx, matrix)) - *passes each row array to the iterator*
-- .eachCol(iterator(col, colIdx, matrix))
-- .map(iterator(val, rowIdx, colIdx, matrix))
-- .reduce(iterator(acc, val, rowIdx, colIdx, matrix))
+- .eachRow(iterator(row, rowIndex, matrix)) - *passes each row array to the iterator*
+- .eachCol(iterator(col, colIndex, matrix))
+- .map(iterator(val, rowIndex, colIndex, matrix))
+- .reduce(iterator(acc, val, rowIndex, colIndex, matrix))
 - .reduceHorizontal - *alias of `reduce`*
 - .reduceVertical
 - .reduceRows(iterator(acc, val, row), initial) - *collapses each row to turn matrix into 1d array*
