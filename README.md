@@ -74,10 +74,14 @@ An easy-to-use library for working with two-dimensional arrays and matrices.  Mo
 - new Matrix(height, width, value)
 - new Matrix(height, width, fillFunction(row, col))
 - new Matrix(arrayOfArrays)
-- Identity(size)
-- Rotation(radians) - *2d rotation matrix for given angle*
-- RotationRadians(radians) - *alias of `Rotation`*
-- RotationDegrees(degrees)
+- .Identity(size)
+- .Rotation(radians) - *2d rotation matrix for given angle*
+- .RotationRadians(radians) - *alias of `Rotation`*
+- .RotationDegrees(degrees)
+
+__coming soon__
+- .Vector/.VectorHorizontal
+- .VectorVertical
 
 ### Basics
 - .to2dArray()
@@ -122,6 +126,14 @@ All functional methods by default iterate from left to right, top to bottom.  Ve
 
 __coming soon__
 - Support for currying and partial application!
+- Right/bottom each/reduce
+- .every()
+- .some()
+- .zipWith()
+- .pluck()
+- .sample()
+- .shuffle()
+- .invoke()
 
 ### Numerical methods
 
@@ -164,6 +176,10 @@ These work the same as the familiar array methods, except they take/return array
 - .concatVertical(matrix)
 - .minor(row, col) - *the (row, col) minor of the matrix*
 - .transpose()
+
+__coming soon__
+- .swapRows()
+- .swapCols()
 
 ### Query methods
 
