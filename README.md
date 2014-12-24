@@ -150,7 +150,7 @@ __coming soon__
 These work the same as the familiar array methods, except they take/return arrays. Push/pop/shift/unshift are in-place.  Slice/concat/transpose/minor return new matrices.
 
 - .slice(startRow, startCol, endRow, endCol) - *behaves like array slice*
-- .submatrix - *alias of slice*
+- .submatrix() - *alias of `slice`*
 - .pushRow(newRow)
 - .pushCol(newCol)
 - .unshiftRow(newRow)
