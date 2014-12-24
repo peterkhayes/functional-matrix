@@ -1,6 +1,6 @@
 # Functional Matrix
 
-An easy-to-use library for working with two-dimensional arrays and matrices.  Most array methods are implemented here, including `each`, `map`, `reduce`, `push`, `pop`, `slice`, and `concat`.  Standard numerical methods, such as matrix multiplication and determinants, are also included, along with some commonly used matrices, such as identity and rotation.
+An easy-to-use library for working with two-dimensional arrays and matrices.  Most functional and array methods are implemented here, including `each`, `map`, `reduce`, `push`, `pop`, `slice`, and `concat`.  Standard numerical methods, such as matrix multiplication and determinants, are also included, along with some commonly used matrices, such as identity and rotation.
 
 ## Usage
 
@@ -60,11 +60,11 @@ An easy-to-use library for working with two-dimensional arrays and matrices.  Mo
   matrix.add(4).add(otherMatrix).times(anotherMatrix).mod(2).determinant()
 
   // Implementations of standard array methods.
-  matrix.slice(0, 0, 2, 2) // args: startRow, startCol, endRow
-  matrix.pushCol([5, 6, 7]); // returns new col count
-  matrix.popRow(); 
-  matrix.concatVertical(otherMatrix);
-  matrix.indexOf(1) // {row: 0, col: 0}
+  var slice = matrix.slice(0, 0, 2, 2) // args: startRow, startCol, endRow, endCol
+  var newColCount = matrix.pushCol([5, 6, 7]); // modifies matrix in-place
+  var row = matrix.popRow(); 
+  var larger = matrix.concatVertical(otherMatrix); // sizes must match
+  var idx = matrix.indexOf(1) // {row: 0, col: 0}
   
 ```
 
@@ -82,17 +82,16 @@ An easy-to-use library for working with two-dimensional arrays and matrices.  Mo
 ### Basics
 - .to2dArray()
 - .toString()
+- .copy()
 - .equals(matrix)
 - .equalsRow(rowIndex, array)
 - .equalsRow(rowIndex, matrix)
 - .equalsCol(colIndex, array)
 - .equalsCol(colIndex, matrix)
-- .copy()
-- .clear() - *sets all values to undefined*
 - .size() - *returns an object {rows: x, cols: y};*
-- .withinBounds(rowIndex, colIndex) - *boolean*
 - .rows() - *row count*
 - .cols() - *col count*
+- .withinBounds(rowIndex, colIndex) - *boolean*
 - .get(rowIndex, colIndex)
 - .getRow(rowIndex)
 - .getCol(colIndex)
@@ -104,21 +103,22 @@ An easy-to-use library for working with two-dimensional arrays and matrices.  Mo
 - .setCol(colIndex, arrayOfNewValues)
 - .setCol(colIndex, function(rowIndex))
 - .fill(fillFunction(rowIndex, colIndex)) - *sets all values*
+- .clear() - *sets all values to undefined*
 
 ### Functional Methods
 All functional methods by default iterate from left to right, top to bottom.  Vertical versions are also provided, though.
 
-- .each(iterator(val, rowIndex, colIndex, matrix))
+- .map(iterator(value, rowIndex, colIndex, matrix))
+- .each(iterator(value, rowIndex, colIndex, matrix))
 - .eachHorizontal - *alias of `each`*
 - .eachVertical
 - .eachRow(iterator(row, rowIndex, matrix)) - *passes each row array to the iterator*
 - .eachCol(iterator(col, colIndex, matrix))
-- .map(iterator(val, rowIndex, colIndex, matrix))
-- .reduce(iterator(acc, val, rowIndex, colIndex, matrix))
+- .reduce(iterator(acc, value, rowIndex, colIndex, matrix))
 - .reduceHorizontal - *alias of `reduce`*
 - .reduceVertical
-- .reduceRows(iterator(acc, val, row), initial) - *collapses each row to turn matrix into 1d array*
-- .reduceCols(iterator(acc, val, col), initial) - *initial can be a value or an array of values, one per column*
+- .reduceRows(iterator(acc, value, row), initial) - *collapses each row to turn matrix into 1d array*
+- .reduceCols(iterator(acc, value, col), initial) - *initial can be a value or an array of values, one per column*
 
 __coming soon__
 - Support for currying and partial application!
