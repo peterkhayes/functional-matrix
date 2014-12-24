@@ -80,16 +80,16 @@ An easy-to-use library for working with two-dimensional arrays and matrices.  Mo
 - .RotationDegrees(degrees)
 
 __coming soon__
-- .Vector/.VectorHorizontal
-- .VectorVertical
+- .Vector()/.VectorHorizontal()
+- .VectorVertical()
 
 ### Basics
 - .to2dArray()
 - .toString()
 - .copy()
 - .equals(matrix)
-- .equalsRow(rowIndex, array)
-- .equalsRow(rowIndex, matrix)
+- .equalsRow(rowIndex, array) - *is row equal to given array*
+- .equalsRow(rowIndex, matrix) - *is row equal to row in other matrix *
 - .equalsCol(colIndex, array)
 - .equalsCol(colIndex, matrix)
 - .size() - *returns an object {rows: x, cols: y};*
@@ -97,10 +97,10 @@ __coming soon__
 - .cols() - *col count*
 - .withinBounds(rowIndex, colIndex) - *boolean*
 - .get(rowIndex, colIndex)
-- .getRow(rowIndex)
+- .getRow(rowIndex) - *returns a copy*
 - .getCol(colIndex)
 - .set(rowIndex, colIndex, newValue)
-- .setRow(rowIndex, newValue)
+- .setRow(rowIndex, newValue) - *all entries are set to newValue*
 - .setRow(rowIndex, arrayOfNewValues)
 - .setRow(rowIndex, function(colIndex))
 - .setCol(colIndex, newValue)
