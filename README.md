@@ -80,9 +80,9 @@ Functional Matrix is fully tested and throws clear error messages to aid in your
 - .rotation(radians) - *2d rotation matrix for given angle*
 - .rotationRadians(radians) - *alias of `rotation`*
 - .rotationDegrees(degrees)
-- .vector()
-- .vectorHorizontal() - *alias of `rector`*
-- .vectorVertical()
+- .vector(array) - *a matrix with one row*
+- .vectorHorizontal(array) - *alias of `rector`*
+- .vectorVertical(array) - *like vector, but transposed*
 
 ### Basics
 - .to2dArray()
@@ -90,8 +90,8 @@ Functional Matrix is fully tested and throws clear error messages to aid in your
 - .copy()
 - .clone() - *alias of `copy`*
 - .equals(matrix)
-- .equalsRow(rowIdx, array) - *is row equal to given array*
-- .equalsRow(rowIdx, matrix) - *is row equal to row in other matrix*
+- .equalsRow(rowIdx, array) - *tests if row is equal to given array*
+- .equalsRow(rowIdx, matrix) - *tests if row is equal to row in other matrix*
 - .equalsCol(colIdx, array)
 - .equalsCol(colIdx, matrix)
 - .size() - *returns an object {rows: x, cols: y};*
@@ -99,7 +99,7 @@ Functional Matrix is fully tested and throws clear error messages to aid in your
 - .cols() - *col count*
 - .withinBounds(rowIdx, colIdx) - *boolean*
 - .get(rowIdx, colIdx)
-- .getRow(rowIdx) - *returns a copy*
+- .getRow(rowIdx) - *returns a copy of the indicated row*
 - .getCol(colIdx)
 - .set(rowIdx, colIdx, newValue)
 - .setRow(rowIdx, newValue) - *all entries are set to newValue*
@@ -118,7 +118,7 @@ All functional methods by default iterate from left to right, top to bottom.  Ve
 - .reduce(iterator(acc, value, rowIdx, colIdx, matrix))
 - .reduceHorizontal - *alias of `reduce`*
 - .reduceVertical
-- .reduceRows(iterator(acc, value, row), initial) - *collapses each row to turn matrix into 1d array*
+- .reduceRows(iterator(acc, value, row), initial) - *passes each row to iterator, returns an array of results*
 - .reduceCols(iterator(acc, value, col), initial) - *initial can be a value or an array of values, one per column*
 - .each(iterator(value, rowIdx, colIdx, matrix))
 - .eachHorizontal - *alias of `each`*
