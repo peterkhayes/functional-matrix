@@ -421,7 +421,7 @@ Matrix.prototype.zipWith = function(that, iterator) {
     throw new Error(["Cannot zip a matrix with", this._rows, "rows with a matrix of", that._rows, "rows"].join(" "));
   }
   if(this._cols !== that._cols) {
-    throw new Error(["Cannot zip a matrix with", this._cols, "cols with a matrix of", that._cols, "rows"].join(" "));
+    throw new Error(["Cannot zip a matrix with", this._cols, "cols with a matrix of", that._cols, "cols"].join(" "));
   }
   var ths = this;
   return new Matrix(this._rows, this._cols, function(i, j) {

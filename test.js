@@ -549,6 +549,25 @@ describe("Matrix", function() {
     });
   });
 
+  describe("#zipWith", function() {
+
+    it("returns a matrix that results from applying a function to two matrices", function() {
+      var zipped = ex23.zipWith(repeats, function(elem1, elem2, i, j) {
+        return elem1 + elem2 + i + j;
+      });
+      expect(zipped.to2dArray()).to.deep.equal([[1, 4, 7], [6, 8, 11]]);
+    });
+
+    it("throws if first argument is not a matrix", function() {
+      expect(ex23.zipWith.bind(ex23, "not a matrix", function() {})).to.throw();
+    });
+
+    it("throws if matrices are not the same size", function() {
+      expect(ex23.zipWith.bind(ex23, ex2, function() {})).to.throw();
+      expect(ex23.zipWith.bind(ex23, ex3, function() {})).to.throw();
+    });
+  });
+
 
   /* 
     Size-Changing Methods

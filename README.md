@@ -115,7 +115,6 @@ Functional Matrix is fully tested and throws clear error messages to aid in your
 All functional methods by default iterate from left to right, top to bottom.  Vertical versions are also provided, though.  All methods are NOT in-place and return copies.
 
 - .map(iterator(value, rowIdx, colIdx, matrix))
-- .zipWith(otherMatrix, iterator(thisElem, otherElem, i, j, thisMatrix, otherMatrix)) - *like `map` but with two sources*
 - .reduce(iterator(acc, value, rowIdx, colIdx, matrix))
 - .reduceHorizontal - *alias of `reduce`*
 - .reduceVertical
@@ -128,6 +127,7 @@ All functional methods by default iterate from left to right, top to bottom.  Ve
 - .eachCol(iterator(col, colIdx, matrix))
 - .every(iterator(value, rowIdx, colIdx))
 - .some(iterator(value, rowIdx, colIdx))
+- .zipWith(otherMatrix, iterator(thisElem, otherElem, i, j, thisMatrix, otherMatrix)) - *like `map` but with two sources of the same size*
 - .pluck(property) - *maps to named property of each element*
 - .invoke(method) - *maps to result of invoking named method of each element*
 - .sample() - *returns random element*
