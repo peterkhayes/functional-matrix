@@ -16,6 +16,15 @@ var isFunction = function(item) {
 var isArray = Array.isArray || function(item) {
   return Object.prototype.toString.call(item) === "[object Array]";
 };
+var rand = function(min, max) {
+  return Math.floor(Math.random()*(max - min)) + min;
+};
+var swap = function(arr, i, j) {
+  var temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+  return arr;
+};
 
 /*
   Constructors and such
@@ -61,6 +70,16 @@ Matrix.prototype.toString = function() {
 
 Matrix.prototype.to2dArray = function() {
   return this._storage.slice().map(function(r) {return r.slice(); });
+};
+
+Matrix.prototype.toList = function() {
+  var output = [];
+  for (var i = 0; i < this._rows; i++) {
+    for (var j = 0; j < this._cols; j++) {
+      output.push(this._storage[i][j]);
+    }
+  }
+  return output;
 };
 
 Matrix.prototype.copy = Matrix.prototype.clone = function() {
@@ -257,7 +276,6 @@ Matrix.prototype.equalsCol = function(col, that) {
 };
 
 
-
 /*
   Functional Programming Methods
 */
@@ -337,18 +355,90 @@ Matrix.prototype.reduceCols = function(iterator, val) {
   return output;
 };
 
+Matrix.prototype.every = Matrix.prototype.all = function(iterator) {
+  for (var i = 0; i < this._rows; i++) {
+    for (var j = 0; j < this._cols; j++) {
+      if (!iterator(this.get(i, j), i, j, this)) {
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
+Matrix.prototype.some = Matrix.prototype.any = function(iterator) {
+  for (var i = 0; i < this._rows; i++) {
+    for (var j = 0; j < this._cols; j++) {
+      if (iterator(this.get(i, j), i, j, this)) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
+Matrix.prototype.pluck = function(prop) {
+  return this.map(function(elem) {
+    return elem[prop];
+  });
+};
+
+Matrix.prototype.invoke = function(method) {
+  return this.map(function(elem) {
+    return elem[method]();
+  });
+};
+
+Matrix.prototype.shuffle = function() {
+  var elems = this.toList();
+  var len = elems.length;
+  for (var i = 0, r; i < len; i++) {
+    r = rand(i, len);
+    swap(elems, i, r);
+  }
+  return new Matrix(this._rows, this._cols, elems.pop.bind(elems));
+};
+
+Matrix.prototype.sample = function(n) {
+  if (n < 0 || n > this._rows * this._cols) {
+    throw new Error(["Cannot sample", n, "unique values from a matrix of size", this._rows, "by", this._cols].join(" "));
+  }
+  // Return single item for n undefined.
+  if (n == null) {
+    var row = rand(0, this._rows);
+    var col = rand(0, this._cols);
+    return this.get(row, col);
+  }
+  // TODO: Optimize for small n.
+  return this.shuffle().toList().slice(0, n);
+};
+
+Matrix.prototype.zipWith = function(that, iterator) {
+  if (!(that instanceof Matrix)) {
+    throw new Error("Cannot zip a matrix with a non-matrix");
+  }
+  if(this._rows !== that._rows) {
+    throw new Error(["Cannot zip a matrix with", this._rows, "rows with a matrix of", that._rows, "rows"].join(" "));
+  }
+  if(this._cols !== that._cols) {
+    throw new Error(["Cannot zip a matrix with", this._cols, "cols with a matrix of", that._cols, "rows"].join(" "));
+  }
+  var ths = this;
+  return new Matrix(this._rows, this._cols, function(i, j) {
+    return iterator(ths.get(i, j), that.get(i, j), i, j, ths, that);
+  });
+};
+
 /*
   Size-changing methods
 */
 
-Matrix.prototype.submatrix = function(startRow, startCol, stopRow, stopCol) {
+Matrix.prototype.submatrix =  Matrix.prototype.slice = function(startRow, startCol, stopRow, stopCol) {
   var newStorage = this._storage.slice(startRow, stopRow).map(function(row) {
     return row.slice(startCol, stopCol);
   });
   return new Matrix(newStorage);
 };
-
-Matrix.prototype.slice = Matrix.prototype.submatrix;
 
 Matrix.prototype.pushRow = function(newRow) {
   if (!isArray(newRow)) {
@@ -478,6 +568,54 @@ Matrix.prototype.transpose = function() {
   });
 };
 
+Matrix.prototype.swapRows = function(row1, row2) {
+  return new Matrix(this._rows, this._cols, (function(i, j) {
+    if (i === row1) {
+      return this.get(row2, j);
+    } else if (i === row2) {
+      return this.get(row1, j);
+    } else {
+      return this.get(i, j);
+    }
+  }).bind(this));
+};
+
+Matrix.prototype.swapCols = function(col1, col2) {
+  return new Matrix(this._rows, this._cols, (function(i, j) {
+    if (j === col1) {
+      return this.get(i, col2);
+    } else if (j === col2) {
+      return this.get(i, col1);
+    } else {
+      return this.get(i, j);
+    }
+  }).bind(this));
+};
+
+Matrix.prototype.rotateCW = function() {
+  return new Matrix(this._cols, this._rows, (function(i, j) {
+    return this.get(this._rows - 1 - j, i);
+  }).bind(this));
+};
+
+Matrix.prototype.rotateCCW = function() {
+  return new Matrix(this._cols, this._rows, (function(i, j) {
+    return this.get(j, this._cols - 1 - i);
+  }).bind(this));
+};
+
+Matrix.prototype.flipHorizontal = function() {
+  return new Matrix(this._rows, this._cols, (function(i, j) {
+    return this.get(i, this._cols - 1 - j);
+  }).bind(this))
+};
+
+Matrix.prototype.flipVertical = function() {
+  return new Matrix(this._rows, this._cols, (function(i, j) {
+    return this.get(this._rows - 1 - i, j);
+  }).bind(this))
+};
+
 /*
   Query methods
 */
@@ -563,7 +701,6 @@ Matrix.prototype.times = Matrix.prototype.multiply = function(that) {
     if (this._cols !== that._rows) {
       throw new Error(["Cannot multiply a matrix of", this._cols, "cols with a matrix of", that._rows, "rows"].join(" "));
     }
-
     return new Matrix(this._rows, that._cols, (function(i, j) {
       var row = this.getRow(i);
       var col = that.getCol(j);
@@ -615,29 +752,6 @@ Matrix.prototype.round = function(precision) {
   });
 };
 
-Matrix.identity = function(size) {
-  if (size > 0 && size < Infinity) {
-    return new Matrix(size, size, function(i, j) {
-      return i === j ? 1 : 0;
-    });
-  } else {
-    throw new Error("Invalid size for identity matrix");
-  }
-};
-
-Matrix.rotation = function(rad) {
-  return new Matrix([
-    [Math.cos(rad), -1*Math.sin(rad)],
-    [Math.sin(rad), Math.cos(rad)]
-  ]);
-};
-
-Matrix.rotationRadians = Matrix.rotation;
-
-Matrix.rotationDegrees = function(deg) {
-  return Matrix.rotation(deg*Math.PI/180);
-};
-
 Matrix.prototype.determinant = function() {
   var size = this._rows;
   if (size !== this._cols) {
@@ -685,6 +799,35 @@ Matrix.prototype.solveSystem = function(values) {
   throw new Error("Not yet implemented");
 };
 
+
+Matrix.identity = function(size) {
+  if (size > 0 && size < Infinity) {
+    return new Matrix(size, size, function(i, j) {
+      return i === j ? 1 : 0;
+    });
+  } else {
+    throw new Error("Invalid size for identity matrix");
+  }
+};
+
+Matrix.rotation = Matrix.rotationRadians = function(rad) {
+  return new Matrix([
+    [Math.cos(rad), -1*Math.sin(rad)],
+    [Math.sin(rad), Math.cos(rad)]
+  ]);
+};
+
+Matrix.rotationDegrees = function(deg) {
+  return Matrix.rotation(deg*Math.PI/180);
+};
+
+Matrix.vector = Matrix.vectorHorizontal = function(arr) {
+  return new Matrix([arr]);
+};
+
+Matrix.vectorVertical = function(arr) {
+  return new Matrix(arr.map(function(elem) {return [elem]; }));
+};
 
 
 module.exports = Matrix;

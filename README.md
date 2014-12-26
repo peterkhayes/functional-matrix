@@ -1,6 +1,8 @@
 # Functional Matrix
 
-An easy-to-use library for working with two-dimensional arrays and matrices.  Most functional and array methods are implemented here, including `each`, `map`, `reduce`, `push`, `pop`, `slice`, and `concat`.  Standard numerical methods, such as matrix multiplication and determinants, are also included, along with some commonly used matrices, such as identity and rotation.
+An easy-to-use library for working with two-dimensional arrays and matrices.  Most functional and array methods are implemented here, including `each`, `map`, `reduce`, `zipWith`, `every`, `push`, `pop`, `slice`, and `concat`.  Standard numerical methods, such as `multiply` and `determinant`, are also included, along with some common examples, like the identity and 2d-rotation matrices.
+
+Functional Matrix is fully tested and throws clear error messages to aid in your debugging.
 
 ## Usage
 
@@ -74,19 +76,19 @@ An easy-to-use library for working with two-dimensional arrays and matrices.  Mo
 - new Matrix(height, width, value)
 - new Matrix(height, width, fillFunction(row, col))
 - new Matrix(arrayOfArrays)
-- .Identity(size)
-- .Rotation(radians) - *2d rotation matrix for given angle*
-- .RotationRadians(radians) - *alias of `Rotation`*
-- .RotationDegrees(degrees)
-
-__coming soon__
-- .Vector()/.VectorHorizontal()
-- .VectorVertical()
+- .identity(size)
+- .rotation(radians) - *2d rotation matrix for given angle*
+- .rotationRadians(radians) - *alias of `rotation`*
+- .rotationDegrees(degrees)
+- .vector()
+- .vectorHorizontal() - *alias of `rector`*
+- .vectorVertical()
 
 ### Basics
 - .to2dArray()
 - .toString()
 - .copy()
+- .clone() - *alias of `copy`*
 - .equals(matrix)
 - .equalsRow(rowIdx, array) - *is row equal to given array*
 - .equalsRow(rowIdx, matrix) - *is row equal to row in other matrix*
@@ -110,32 +112,34 @@ __coming soon__
 - .clear() - *sets all values to undefined*
 
 ### Functional Methods
-All functional methods by default iterate from left to right, top to bottom.  Vertical versions are also provided, though.
+All functional methods by default iterate from left to right, top to bottom.  Vertical versions are also provided, though.  All methods are NOT in-place and return copies.
 
 - .map(iterator(value, rowIdx, colIdx, matrix))
-- .each(iterator(value, rowIdx, colIdx, matrix))
-- .eachHorizontal - *alias of `each`*
-- .eachVertical
-- .eachRow(iterator(row, rowIdx, matrix)) - *passes each row array to the iterator*
-- .eachCol(iterator(col, colIdx, matrix))
+- .zipWith(otherMatrix, iterator(thisElem, otherElem, i, j, thisMatrix, otherMatrix)) - *like `map` but with two sources*
 - .reduce(iterator(acc, value, rowIdx, colIdx, matrix))
 - .reduceHorizontal - *alias of `reduce`*
 - .reduceVertical
 - .reduceRows(iterator(acc, value, row), initial) - *collapses each row to turn matrix into 1d array*
 - .reduceCols(iterator(acc, value, col), initial) - *initial can be a value or an array of values, one per column*
+- .each(iterator(value, rowIdx, colIdx, matrix))
+- .eachHorizontal - *alias of `each`*
+- .eachVertical
+- .eachRow(iterator(row, rowIdx, matrix)) - *passes each row array to the iterator*
+- .eachCol(iterator(col, colIdx, matrix))
+- .every(iterator(value, rowIdx, colIdx))
+- .some(iterator(value, rowIdx, colIdx))
+- .pluck(property) - *maps to named property of each element*
+- .invoke(method) - *maps to result of invoking named method of each element*
+- .sample() - *returns random element*
+- .sample(n) - *returns array of n random elements*
+- .shuffle() - *shuffles elements but maintains size*
 
 __coming soon__
 - Support for currying and partial application!
 - Right/bottom versions of each/reduce
-- .every()
-- .some()
-- .zipWith()
-- .pluck()
-- .sample()
-- .shuffle()
-- .invoke()
 
 ### Numerical methods
+All methods are NOT in-place and return copies.
 
 - .plus(number)
 - .plus(matrix)
@@ -149,7 +153,7 @@ __coming soon__
 - .mod(number)
 - .round(digit) - *rounds all values to the given precision*
 - .determinant()
-- .rowMultiply(fromIdx, toIdx, multiple)
+- .rowMultiply(fromIdx, toIdx, multiple) - *add multiple of fromRow to toRow*
 
 __coming soon__
 - .inverse()
@@ -158,8 +162,8 @@ __coming soon__
 - .eigenvalues()
 
 
-### Size-changing methods
-These work the same as the familiar array methods, except they take/return arrays. Push/pop/shift/unshift are in-place.  Slice/concat/transpose/minor return new matrices.
+### Transforming methods
+These work the same as the familiar array methods, except they take/return arrays. Push/pop/shift/unshift are in-place, to match arrays.  All other methods return new matrices.
 
 - .slice(startRow, startCol, endRow, endCol) - *negative indices behave like array slice*
 - .submatrix() - *alias of `slice`*
@@ -174,12 +178,10 @@ These work the same as the familiar array methods, except they take/return array
 - .concat(matrix)
 - .concatHorizontal - *alias of `concat`*
 - .concatVertical(matrix)
-- .minor(row, col) - *the matrix after removing the given row and column*
+- .minor(rowIdx, colIdx) - *the matrix after removing the given row and column*
 - .transpose()
-
-__coming soon__
-- .swapRows()
-- .swapCols()
+- .swapRows(rowIdx1, rowIdx2)
+- .swapCols(colIdx1, colIdx2)
 - .rotateCW()
 - .rotateCCW()
 - .flipHorizontal()

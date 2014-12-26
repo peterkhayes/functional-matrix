@@ -3,9 +3,24 @@
 var Matrix = require('./');
 var expect = require("chai").expect;
 
+
 describe("Matrix", function() {
 
   var ex1, ex2, ex3, ex23, repeats, empty;
+
+  var aliasTest = function(m1, m2) {
+    return function() {
+      expect(ex3[m2]).to.not.equal(undefined)
+      expect(ex3[m1]).to.equal(ex3[m2]);
+    }
+  };
+
+  var classAliasTest = function(m1, m2) {
+    return function() {
+      expect(Matrix[m1]).to.equal(Matrix[m2]);
+      expect(Matrix[m1]).to.not.equal(undefined);
+    }
+  };
 
   beforeEach(function() {
     ex1 = new Matrix(1, 1, "A");
@@ -122,6 +137,13 @@ describe("Matrix", function() {
     });
   });
 
+  describe("#toList", function() {
+    it("returns a list of all elements in the matrix", function() {
+      expect(ex23.toList()).to.deep.equal([1, 2, 3, 4, 5, 6]);
+      expect(repeats.toList()).to.deep.equal([0, 1, 2, 1, 1, 2]);
+    });
+  });
+
   describe("#clear", function() {
     it("clears the matrix", function() {
       ex23.clear();
@@ -148,9 +170,7 @@ describe("Matrix", function() {
       expect(ex3.get(0, 0)).to.equal(1);
     });
 
-    it("is aliased to #clone", function() {
-      expect(ex2.copy).to.equal(ex2.clone);
-    });
+    it("is aliased to #clone", aliasTest("copy", "clone"));
   });
 
   describe("#equals", function() {
@@ -341,9 +361,7 @@ describe("Matrix", function() {
       );
     });
 
-    it("is aliased to #eachHorizontal", function() {
-      expect(ex2.each).to.equal(ex2.eachHorizontal);
-    });
+    it("is aliased to #eachHorizontal", aliasTest("each", "eachHorizontal"));
   });
 
   describe("#eachVertical", function() {
@@ -404,9 +422,7 @@ describe("Matrix", function() {
       expect(reduced).to.equal(expected);
     });
 
-      it("is aliased to #reduceHorizontal", function() {
-      expect(ex2.reduce).to.equal(ex2.reduceHorizontal);
-    });
+    it("is aliased to #reduceHorizontal", aliasTest("reduce", "reduceHorizontal"));
   });
 
   describe("#reduceVertical", function() {
@@ -455,6 +471,85 @@ describe("Matrix", function() {
     });
   });
 
+  describe("#every", function() {
+    it("returns the AND of applying test to each element", function() {
+      expect(ex23.every(function(x) {return x < 7 && x > 0;})).to.equal(true);
+      expect(ex23.every(function(x) {return x < 6 && x > 0;})).to.equal(false);
+      expect(ex23.every(function(x, i, j) {return i < 2 && j < 3;})).to.equal(true);
+      expect(ex23.every(function(x, i, j) {return i < 3 && j < 2;})).to.equal(false);
+    });
+
+    it("is aliased to #all", aliasTest("every", "all"));
+  });
+
+  describe("#some", function() {
+    it("returns the OR of applying test to each element", function() {
+      expect(ex23.some(function(x) {return x < 2;})).to.equal(true);
+      expect(ex23.some(function(x) {return x < 1;})).to.equal(false);
+      expect(ex23.some(function(x, i, j) {return i > 0 && j > 1;})).to.equal(true);
+      expect(ex23.some(function(x, i, j) {return i < 1 && j < 0;})).to.equal(false);
+    });
+
+    it("is aliased to #any", aliasTest("some", "any"));
+  });
+
+  describe("#pluck", function() {
+    it("returns a new matrix with the plucked property", function() {
+      var matrix = new Matrix([["a", "ab", "abc"], ["ab", "abc", "abcd"]]);
+      expect(matrix.pluck("length").to2dArray()).to.deep.equal([[1, 2, 3], [2, 3, 4]]);
+    });
+  });
+
+  describe("#invoke", function() {
+    it("calls the given method of each element and returns results", function() {
+      expect(ex23.invoke("toString").to2dArray()).to.deep.equal([["1", "2", "3"], ["4", "5", "6"]]);
+    });
+  });
+
+  describe("#shuffle", function() {
+    it("changes the order of elements of the array", function() {
+      var matrix = new Matrix(10, 10, Math.random.bind(Math));
+      var shuffled = matrix.shuffle();
+      expect(shuffled.equals(matrix)).to.equal(false);
+      var elems1 = matrix.toList().sort();
+      var elems2 = shuffled.toList().sort();
+      expect(elems1).to.deep.equal(elems2);
+    });
+  });
+
+  describe("#sample", function() {
+    it("returns a single element from the array if no arguments are given", function() {
+      var sampled = [];
+      for (var i = 0; i < 20; i++) {
+        sampled.push(ex3.sample());
+      }
+      sampled.forEach(function(elem) {
+        expect(ex3.contains(elem)).to.equal(true);
+      });
+      // Make sure it's not always the same item.
+      sampled.sort();
+      expect(sampled[0]).to.not.equal(sampled[sampled.length - 1]);
+    });
+
+    it("returns an array of n distinct elements from the array if n given", function() {
+      for (var i = 0; i <= 9; i++) {
+        var sampled = ex3.sample(i);
+        expect(sampled.length).to.equal(i);
+        sampled.forEach(function(elem, i) {
+          expect(ex3.contains(elem)).to.equal(true);
+          var others = sampled.slice(0, i).concat(sampled.slice(i+1));
+          expect(others.indexOf(elem)).to.equal(-1);
+        });
+      }
+    });
+
+    it("throws if you attempt to sample too many or too few elements", function() {
+      expect(ex3.sample.bind(ex3, -1)).to.throw();
+      expect(ex3.sample.bind(ex3, 10)).to.throw();
+    });
+  });
+
+
   /* 
     Size-Changing Methods
   */
@@ -470,9 +565,7 @@ describe("Matrix", function() {
       expect(sub3.to2dArray()).to.deep.equal([[5, 6], [8, 9]]);
     });
 
-    it("is aliased to #slice", function() {
-      expect(ex2.slice).to.equal(ex2.submatrix);
-    });
+    it("is aliased to #slice", aliasTest("slice", "submatrix"));
 
   });
 
@@ -629,9 +722,7 @@ describe("Matrix", function() {
       expect(ex3.concat.bind(ex3, {_rows: 2})).to.throw("Cannot concat a matrix to a non-matrix");
     });
 
-    it("is aliased to #concatHorizontal", function() {
-      expect(ex2.concat).to.equal(ex2.concatHorizontal);
-    });
+    it("is aliased to #concatHorizontal", aliasTest("concat", "concatHorizontal"));
   });
 
   describe("#concatVertical", function() {
@@ -677,6 +768,68 @@ describe("Matrix", function() {
       var transpose3 = [[1, 4, 7], [2, 5, 8], [3, 6, 9]];
       expect(ex23.transpose().to2dArray()).to.deep.equal(transpose23);
       expect(ex3.transpose().to2dArray()).to.deep.equal(transpose3);
+    });
+  });
+
+  describe("#swapRows", function() {
+    it("switches the position of two rows", function() {
+      expect(ex23.swapRows(0, 1).to2dArray()).to.deep.equal([[4, 5, 6], [1, 2, 3]]);
+      expect(ex3.swapRows(0, 1).to2dArray()).to.deep.equal([[4, 5, 6], [1, 2, 3], [7, 8, 9]]);
+    });
+  });
+
+  describe("#swapCols", function() {
+    it("switches the position of two cols", function() {
+      expect(ex23.swapCols(0, 1).to2dArray()).to.deep.equal([[2, 1, 3], [5, 4, 6]]);
+      expect(ex3.swapCols(0, 1).to2dArray()).to.deep.equal([[2, 1, 3], [5, 4, 6], [8, 7, 9]]);
+    });
+  });
+
+  describe("#rotateCW", function() {
+    it("rotates a matrix 90 degrees clockwise", function() {
+      expect(ex23.rotateCW().to2dArray()).to.deep.equal([[4, 1], [5, 2], [6, 3]]);
+      expect(ex3.rotateCW().to2dArray()).to.deep.equal([[7, 4, 1], [8, 5, 2], [9, 6, 3]]);
+    });
+
+    it("four rotations returns the original matrix", function() {
+      var rotate4 = ex23.rotateCW().rotateCW().rotateCW().rotateCW();
+      expect(rotate4.equals(ex23)).to.equal(true);
+    });
+  });
+
+  describe("#rotateCCW", function() {
+    it("rotates a matrix 90 degrees counterclockwise", function() {
+      expect(ex23.rotateCCW().to2dArray()).to.deep.equal([[3, 6], [2, 5], [1, 4]]);
+      expect(ex3.rotateCCW().to2dArray()).to.deep.equal([[3, 6, 9], [2, 5, 8], [1, 4, 7]]);
+    });
+
+    it("four rotations returns the original matrix", function() {
+      var rotate4 = ex23.rotateCCW().rotateCCW().rotateCCW().rotateCCW();
+      expect(rotate4.equals(ex23)).to.equal(true);
+    });
+  });
+
+  describe("#flipHorizontal", function() {
+    it("flips a matrix horizontally", function() {
+      expect(ex23.flipHorizontal().to2dArray()).to.deep.equal([[3, 2, 1], [6, 5, 4]]);
+      expect(ex3.flipHorizontal().to2dArray()).to.deep.equal([[3, 2, 1], [6, 5, 4], [9, 8, 7]]);
+    });
+
+    it("two flips returns the original matrix", function() {
+      var flip2 = ex23.flipHorizontal().flipHorizontal();
+      expect(flip2.equals(ex23)).to.equal(true);
+    });
+  });
+
+  describe("#flipVertical", function() {
+    it("flips a matrix vertically", function() {
+      expect(ex23.flipVertical().to2dArray()).to.deep.equal([[4, 5, 6], [1, 2, 3]]);
+      expect(ex3.flipVertical().to2dArray()).to.deep.equal([[7, 8, 9], [4, 5, 6], [1, 2, 3]]);
+    });
+
+    it("two flips returns the original matrix", function() {
+      var flip2 = ex23.flipVertical().flipVertical();
+      expect(flip2.equals(ex23)).to.equal(true);
     });
   });
 
@@ -771,9 +924,7 @@ describe("Matrix", function() {
       expect(ex2.plus.bind(ex2, null)).to.throw("Cannot add a matrix to null");
     });
 
-    it("is aliased to #add", function() {
-      expect(ex3.plus).to.equal(ex3.add);
-    });
+    it("is aliased to #add", aliasTest("plus", "add"));
   });
 
   describe("#times", function() {
@@ -803,9 +954,7 @@ describe("Matrix", function() {
       expect(ex2.times.bind(ex2, null)).to.throw("Cannot multiply a matrix with null");
     });
 
-    it("is aliased to #multiply", function() {
-      expect(ex3.times).to.equal(ex3.multiply);
-    });
+    it("is aliased to #multiply", aliasTest("times", "multiply"));
   });
 
   describe("#minus", function() {
@@ -829,9 +978,7 @@ describe("Matrix", function() {
       expect(ex2.minus.bind(ex2, null)).to.throw("Cannot subtract null from a matrix");
     });
 
-    it("is aliased to #subtract", function() {
-      expect(ex3.minus).to.equal(ex3.subtract);
-    });
+    it("is aliased to #subtract", aliasTest("subtract", "minus"));
   });
 
   describe("#mod", function() {
@@ -891,9 +1038,7 @@ describe("Matrix", function() {
       expect(rot60.round(2).to2dArray()).to.deep.equal([[0.5, 0.87], [-0.87, 0.5]]);
     });
 
-    it("is aliased to rotationRadians", function() {
-      expect(Matrix.rotationRadians).to.equal(Matrix.rotation);
-    });
+    it("is aliased to #rotationRadians", classAliasTest("rotation", "rotationRadians"));
   });
 
   describe("#rotationDegrees", function() {
@@ -902,5 +1047,19 @@ describe("Matrix", function() {
       expect(Matrix.rotationDegrees(-60).equals(Matrix.rotation(-1*Math.PI/3))).to.equal(true);
     });
   }); 
+
+  describe("#vector", function() {
+    it("creates a vector with given array", function() {
+      expect(Matrix.vector([1, 2, 3, 4]).to2dArray()).to.deep.equal([[1, 2, 3, 4]]);
+    });
+
+    it("is aliased to #vectorHorizontal", classAliasTest("vector", "vectorHorizontal"));
+  });
+
+  describe("#vectorVertical", function() {
+    it("creates a vertical vector with given array", function() {
+      expect(Matrix.vectorVertical([1, 2, 3, 4]).to2dArray()).to.deep.equal([[1], [2], [3], [4]]);
+    });
+  });
 
 });
